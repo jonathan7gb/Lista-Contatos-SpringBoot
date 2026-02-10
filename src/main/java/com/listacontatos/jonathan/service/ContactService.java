@@ -7,6 +7,7 @@ import com.listacontatos.jonathan.exceptions.PhoneNumberAlreadyExists;
 import com.listacontatos.jonathan.model.Contact;
 import com.listacontatos.jonathan.repository.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,5 +77,11 @@ public class ContactService {
         contactFind.setName(contact.getName());
         contactFind.setPhoneNumber(contact.getPhoneNumber());
         return contactRepository.save(contactFind);
+    }
+
+    public void delete(Long id){
+        Contact contactFind = contactRepository.findById(id).orElseThrow(() -> new ContactNotFound("Nenhum contato encontrado!") );
+
+        contactRepository.deleteById(id);
     }
 }

@@ -47,11 +47,8 @@ public class ContactController {
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> delete(@PathVariable Long id){
-        if(contactRepository.existsById(id)){
-                contactRepository.deleteById(id);
-                return ResponseEntity.noContent().build();
-        }else{
-            return ResponseEntity.notFound().build();
-        }
+        contactRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+
     }
 }
