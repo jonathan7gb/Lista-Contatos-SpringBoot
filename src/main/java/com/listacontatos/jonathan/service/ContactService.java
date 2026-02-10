@@ -27,7 +27,7 @@ public class ContactService {
             throw new ContactDataIsNull("O número de telefone do contato não pode ser nulo");
         }
 
-        if(contactRepository.existsByPhoneNumber(contact.getPhoneNumber())){
+        if(contactRepository.existsByPhoneNumberAndIdNot(contact.getPhoneNumber(), contact.getId())){
             throw new PhoneNumberAlreadyExists("Este número de telefone já existe");
         }
 
@@ -52,5 +52,29 @@ public class ContactService {
     public Contact findById(Long id){
         return contactRepository.findById(id).orElseThrow(() -> new ContactNotFound("Nenhum contato encontrado!") );
 
+    }
+
+    public Contact update(Long id, Contact contact) {
+        Contact contactFind = contactRepository.findById(id).orElseThrow(() -> new ContactNotFound("Nenhum contato encontrado!") );
+
+        if(contact.getName() == null || contact.getName().isBlank()){
+            throw new ContactDataIsNull("O nome do contato não pode ser nulo");
+        }
+
+        if(contact.getPhoneNumber() == null || contact.getPhoneNumber().isBlank()){
+            throw new ContactDataIsNull("O número de telefone do contato não pode ser nulo");
+        }
+
+        if(contactRepository.existsByPhoneNumberAndIdNot(contact.getPhoneNumber(), id)){
+            throw new PhoneNumberAlreadyExists("Este número de telefone já existe");
+        }
+
+        if(contact.getPhoneNumber().length() > 15){
+            throw new InvalidPhoneNumber("O número de telefone não pode ter mais do que 15 caracteres!");
+        }
+
+        contactFind.setName(contact.getName());
+        contactFind.setPhoneNumber(contact.getPhoneNumber());
+        return contactRepository.save(contactFind);
     }
 }

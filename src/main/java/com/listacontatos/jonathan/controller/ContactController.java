@@ -41,17 +41,7 @@ public class ContactController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Contact> update(@PathVariable Long id, @RequestBody Contact contact){
-        Optional<Contact> contactFind = contactRepository.findById(id);
-
-        if(contactFind.isPresent()){
-            Contact contactUpdated = contactFind.get();
-            contactUpdated.setName(contact.getName());
-            contactUpdated.setPhoneNumber(contact.getPhoneNumber());
-
-            return ResponseEntity.ok(contactRepository.save(contactUpdated));
-        }else{
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(contactService.update(id, contact));
     }
 
     @DeleteMapping("{id}")
