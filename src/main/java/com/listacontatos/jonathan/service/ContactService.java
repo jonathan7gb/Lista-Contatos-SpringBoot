@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ContactService {
@@ -46,5 +47,10 @@ public class ContactService {
         }
 
         return contactList;
+    }
+
+    public Contact findById(Long id){
+        return contactRepository.findById(id).orElseThrow(() -> new ContactNotFound("Nenhum contato encontrado!") );
+
     }
 }

@@ -35,8 +35,8 @@ public class ContactController {
     }
 
     @GetMapping("/{id}")
-    public Contact findById(@PathVariable Long id){
-        return contactRepository.findById(id).get();
+    public ResponseEntity<Contact> findById(@PathVariable Long id){
+        return ResponseEntity.ok(contactService.findById(id));
     }
 
     @PutMapping("/{id}")
