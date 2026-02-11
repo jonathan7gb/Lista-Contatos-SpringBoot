@@ -75,7 +75,10 @@ public class ContactService {
     }
 
     public ContactResponseDTO update(Long id, ContactRequestDTO contactDTO) {
-        Contact contactFind = contactRepository.findById(id).orElseThrow(() -> new ContactNotFound("Nenhum contato encontrado!") );
+        Contact contactFind = contactRepository.findById(id)
+                .orElseThrow(() ->{
+                    throw new ContactNotFound("Nenhum contato encontrado!");
+                });
 
         if(contactDTO.name() == null || contactDTO.name().isBlank()){
             throw new ContactDataIsNull("O nome do contato não pode ser nulo");
@@ -101,7 +104,10 @@ public class ContactService {
     }
 
     public void delete(Long id){
-        Contact contactFind = contactRepository.findById(id).orElseThrow(() -> new ContactNotFound("Nenhum contato encontrado!") );
+        Contact contactFind = contactRepository.findById(id)
+                .orElseThrow(() ->{
+                    throw new ContactNotFound("Nenhum contato encontrado!");
+                });
 
         contactRepository.deleteById(id);
     }
