@@ -1,15 +1,19 @@
 package com.listacontatos.jonathan.service;
 
+import com.listacontatos.jonathan.dto.ContactRequestDTO;
+import com.listacontatos.jonathan.dto.ContactResponseDTO;
 import com.listacontatos.jonathan.exceptions.ContactDataIsNull;
 import com.listacontatos.jonathan.exceptions.ContactNotFound;
 import com.listacontatos.jonathan.exceptions.InvalidPhoneNumber;
 import com.listacontatos.jonathan.exceptions.PhoneNumberAlreadyExists;
+import com.listacontatos.jonathan.mapper.ContactMapper;
 import com.listacontatos.jonathan.model.Contact;
 import com.listacontatos.jonathan.repository.ContactRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,64 +23,81 @@ public class ContactService {
     @Autowired
     private ContactRepository contactRepository;
 
-    public Contact save(Contact contact) {
-        if(contact.getName() == null || contact.getName().isBlank()){
+    @Autowired
+    private ContactMapper contactMapper;
+
+    public ContactResponseDTO save(ContactRequestDTO requestDTO) {
+        if(requestDTO.name() == null || requestDTO.name().isBlank()){
             throw new ContactDataIsNull("O nome do contato não pode ser nulo");
         }
 
-        if(contact.getPhoneNumber() == null || contact.getPhoneNumber().isBlank()){
+        if(requestDTO.phoneNumber() == null || requestDTO.phoneNumber().isBlank()){
             throw new ContactDataIsNull("O número de telefone do contato não pode ser nulo");
         }
 
-        if(contactRepository.existsByPhoneNumberAndIdNot(contact.getPhoneNumber(), contact.getId())){
+        if(contactRepository.existsByPhoneNumber(requestDTO.phoneNumber())){
             throw new PhoneNumberAlreadyExists("Este número de telefone já existe");
         }
 
-        if(contact.getPhoneNumber().length() > 15){
+        if(requestDTO.phoneNumber().length() > 15){
             throw new InvalidPhoneNumber("O número de telefone não pode ter mais do que 15 caracteres!");
         }
 
+        Contact contactSaved = contactRepository.save(contactMapper.toEntity(requestDTO));
 
-        return contactRepository.save(contact);
+        return contactMapper.toDTO(contactSaved);
     }
 
-    public List<Contact> findAll(){
+    public List<ContactResponseDTO> findAll(){
         List<Contact> contactList = contactRepository.findAll();
+        List<ContactResponseDTO> contactListDTO = new ArrayList<>();
 
         if(contactList.isEmpty()){
             throw new ContactNotFound("Nenhum contato encontrado!");
         }
 
-        return contactList;
+
+        for(Contact c : contactList){
+            contactListDTO.add(contactMapper.toDTO(c));
+        }
+
+        return contactListDTO;
     }
 
-    public Contact findById(Long id){
-        return contactRepository.findById(id).orElseThrow(() -> new ContactNotFound("Nenhum contato encontrado!") );
+    public ContactResponseDTO findById(Long id){
+        Contact contact = contactRepository.findById(id)
+                .orElseThrow(() -> {
+                    throw new ContactNotFound("Nenhum contato encontrado!");
+                });
 
+
+        return contactMapper.toDTO(contact);
     }
 
-    public Contact update(Long id, Contact contact) {
+    public ContactResponseDTO update(Long id, ContactRequestDTO contactDTO) {
         Contact contactFind = contactRepository.findById(id).orElseThrow(() -> new ContactNotFound("Nenhum contato encontrado!") );
 
-        if(contact.getName() == null || contact.getName().isBlank()){
+        if(contactDTO.name() == null || contactDTO.name().isBlank()){
             throw new ContactDataIsNull("O nome do contato não pode ser nulo");
         }
 
-        if(contact.getPhoneNumber() == null || contact.getPhoneNumber().isBlank()){
+        if(contactDTO.phoneNumber() == null || contactDTO.phoneNumber().isBlank()){
             throw new ContactDataIsNull("O número de telefone do contato não pode ser nulo");
         }
 
-        if(contactRepository.existsByPhoneNumberAndIdNot(contact.getPhoneNumber(), id)){
+        if(contactRepository.existsByPhoneNumberAndIdNot(contactDTO.phoneNumber(), id)){
             throw new PhoneNumberAlreadyExists("Este número de telefone já existe");
         }
 
-        if(contact.getPhoneNumber().length() > 15){
+        if(contactDTO.phoneNumber().length() > 15){
             throw new InvalidPhoneNumber("O número de telefone não pode ter mais do que 15 caracteres!");
         }
 
-        contactFind.setName(contact.getName());
-        contactFind.setPhoneNumber(contact.getPhoneNumber());
-        return contactRepository.save(contactFind);
+        contactFind.setName(contactDTO.name());
+        contactFind.setPhoneNumber(contactDTO.phoneNumber());
+
+        Contact contact = contactRepository.save(contactFind);
+        return contactMapper.toDTO(contact);
     }
 
     public void delete(Long id){

@@ -1,5 +1,7 @@
 package com.listacontatos.jonathan.controller;
 
+import com.listacontatos.jonathan.dto.ContactRequestDTO;
+import com.listacontatos.jonathan.dto.ContactResponseDTO;
 import com.listacontatos.jonathan.model.Contact;
 import com.listacontatos.jonathan.repository.ContactRepository;
 import com.listacontatos.jonathan.service.ContactService;
@@ -23,25 +25,25 @@ public class ContactController {
     private ContactService contactService;
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody Contact contact){
-        Contact contactSaved = contactService.save(contact);
+    public ResponseEntity<Void> save(@RequestBody ContactRequestDTO requestDTO){
+        ContactResponseDTO contactSaved = contactService.save(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<Contact>> findAll(){
-        List<Contact> contactList = contactService.findAll();
+    public ResponseEntity<List<ContactResponseDTO>> findAll(){
+        List<ContactResponseDTO> contactList = contactService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(contactList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Contact> findById(@PathVariable Long id){
+    public ResponseEntity<ContactResponseDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(contactService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Contact> update(@PathVariable Long id, @RequestBody Contact contact){
-        return ResponseEntity.ok(contactService.update(id, contact));
+    public ResponseEntity<ContactResponseDTO> update(@PathVariable Long id, @RequestBody ContactRequestDTO contactDTO){
+        return ResponseEntity.ok(contactService.update(id, contactDTO));
     }
 
     @DeleteMapping("{id}")
