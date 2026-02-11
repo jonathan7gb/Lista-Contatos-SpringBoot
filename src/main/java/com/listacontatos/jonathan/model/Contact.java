@@ -21,4 +21,9 @@ public class Contact {
 
     @Column(nullable = false, length = 15)
     private String phoneNumber;
+
+    public Contact(String name, String phoneNumber){
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+    }
 }
