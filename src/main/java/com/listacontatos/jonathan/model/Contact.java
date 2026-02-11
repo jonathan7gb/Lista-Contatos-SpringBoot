@@ -19,7 +19,7 @@ public class Contact {
     @Column(nullable = false, length = 100)
     private String name;
 
-    @Column(nullable = false, length = 15)
+    @Column(nullable = false, length = 15, unique = true)
     private String phoneNumber;
 
     public Contact(String name, String phoneNumber){
