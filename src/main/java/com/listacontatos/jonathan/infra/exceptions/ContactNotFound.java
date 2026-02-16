@@ -1,4 +1,4 @@
-package com.listacontatos.jonathan.exceptions;
+package com.listacontatos.jonathan.infra.exceptions;
 
 public class ContactNotFound extends RuntimeException {
     public ContactNotFound(String message) {

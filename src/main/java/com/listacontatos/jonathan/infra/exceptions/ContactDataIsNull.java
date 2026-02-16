@@ -1,4 +1,4 @@
-package com.listacontatos.jonathan.exceptions;
+package com.listacontatos.jonathan.infra.exceptions;
 
 public class ContactDataIsNull extends RuntimeException {
     public ContactDataIsNull(String message) {

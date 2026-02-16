@@ -1,25 +1,22 @@
-package com.listacontatos.jonathan.controller;
+package com.listacontatos.jonathan.presentation.controller;
 
-import com.listacontatos.jonathan.dto.ContactRequestDTO;
-import com.listacontatos.jonathan.dto.ContactResponseDTO;
-import com.listacontatos.jonathan.model.Contact;
-import com.listacontatos.jonathan.repository.ContactRepository;
-import com.listacontatos.jonathan.service.ContactService;
-import org.apache.coyote.Response;
+import com.listacontatos.jonathan.application.dto.ContactRequestDTO;
+import com.listacontatos.jonathan.application.dto.ContactResponseDTO;
+import com.listacontatos.jonathan.infra.persistence.ContactRepositoryImpl;
+import com.listacontatos.jonathan.application.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/contacts")
 public class ContactController {
 
     @Autowired
-    private ContactRepository contactRepository;
+    private ContactRepositoryImpl contactRepositoryImpl;
 
     @Autowired
     private ContactService contactService;
@@ -49,7 +46,7 @@ public class ContactController {
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> delete(@PathVariable Long id){
-        contactRepository.deleteById(id);
+        contactRepositoryImpl.deleteById(id);
         return ResponseEntity.noContent().build();
 
     }

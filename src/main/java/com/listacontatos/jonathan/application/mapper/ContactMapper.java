@@ -1,8 +1,8 @@
-package com.listacontatos.jonathan.mapper;
+package com.listacontatos.jonathan.application.mapper;
 
-import com.listacontatos.jonathan.dto.ContactRequestDTO;
-import com.listacontatos.jonathan.dto.ContactResponseDTO;
-import com.listacontatos.jonathan.model.Contact;
+import com.listacontatos.jonathan.application.dto.ContactRequestDTO;
+import com.listacontatos.jonathan.application.dto.ContactResponseDTO;
+import com.listacontatos.jonathan.domain.entity.Contact;
 import org.springframework.stereotype.Component;
 
 @Component

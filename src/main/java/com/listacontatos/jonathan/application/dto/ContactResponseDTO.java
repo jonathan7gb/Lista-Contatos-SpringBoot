@@ -1,4 +1,4 @@
-package com.listacontatos.jonathan.dto;
+package com.listacontatos.jonathan.application.dto;
 
 public record ContactResponseDTO(Long id ,
                                  String name,

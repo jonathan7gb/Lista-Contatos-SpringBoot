@@ -1,4 +1,4 @@
-package com.listacontatos.jonathan.exceptions;
+package com.listacontatos.jonathan.infra.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
