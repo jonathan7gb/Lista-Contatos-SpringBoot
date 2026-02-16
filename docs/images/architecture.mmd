@@ -1,0 +1,105 @@
+flowchart LR
+    subgraph external["Cliente Externo"]
+        Client["Cliente HTTP/REST"]
+    end
+
+    subgraph presentation["Presentation Layer"]
+        Controller["ContactController
+        @RestController
+        Endpoints REST"]
+    end
+
+    subgraph application["Application Layer"]
+        Service["ContactService
+        @Service
+        Regras de Negócio"]
+        DTORequest["ContactRequestDTO
+        Record"]
+        DTOResponse["ContactResponseDTO
+        Record"]
+        Mapper["ContactMapper
+        @Component
+        Conversão DTO ↔ Entity"]
+    end
+
+    subgraph domain["Domain Layer"]
+        Entity["Contact
+        @Entity
+        Entidade de Negócio"]
+        Repository["ContactRepository
+        Interface
+        Contrato Repositório"]
+    end
+
+    subgraph infrastructure["Infrastructure Layer"]
+        RepositoryImpl["ContactRepositoryImpl
+        @Repository
+        JpaRepository"]
+        ExceptionHandler["GlobalExceptionHandler
+        @RestControllerAdvice
+        Tratamento de Erros"]
+        Exceptions["Exceções Customizadas
+        ContactNotFound
+        PhoneNumberAlreadyExists
+        InvalidPhoneNumber
+        ContactDataIsNull"]
+    end
+
+    subgraph persistence["Persistence Layer"]
+        DB[("MySQL Database
+        contact_list")]
+        JPA["Spring Data JPA
+        Hibernate"]
+    end
+
+    subgraph crosscutting["Cross-Cutting Concerns"]
+        Validation["Bean Validation
+        @NotNull @Size
+        Jakarta Validation"]
+        Lombok["Lombok
+        @Data @AllArgsConstructor
+        Redução Boilerplate"]
+    end
+
+    Client -->|"HTTP Request
+    GET/POST/PUT/DELETE"| Controller
+    Controller -->|"Chama métodos"| Service
+    Controller -->|"Recebe/Retorna"| DTORequest
+    Controller -->|"Retorna"| DTOResponse
+    
+    Service -->|"Usa"| Mapper
+    Service -->|"Valida e processa"| DTORequest
+    Service -->|"Retorna"| DTOResponse
+    Service -->|"Acessa"| RepositoryImpl
+    Service -->|"Lança"| Exceptions
+    
+    Mapper -->|"Converte"| DTORequest
+    Mapper -->|"Para"| Entity
+    Mapper -->|"Converte"| Entity
+    Mapper -->|"Para"| DTOResponse
+    
+    RepositoryImpl -->|"Implementa"| Repository
+    RepositoryImpl -->|"Estende"| JPA
+    RepositoryImpl -->|"Persiste"| Entity
+    
+    JPA -->|"Conecta"| DB
+    
+    ExceptionHandler -->|"Captura"| Exceptions
+    ExceptionHandler -->|"Retorna"| Client
+    
+    Entity -.->|"Usa"| Validation
+    Entity -.->|"Usa"| Lombok
+    Service -.->|"Valida com"| Validation
+    
+    Controller -->|"HTTP Response
+    JSON"| Client
+
+    style Client fill:#e1f5ff
+    style Controller fill:#fff4e6
+    style Service fill:#e8f5e9
+    style Entity fill:#f3e5f5
+    style RepositoryImpl fill:#fce4ec
+    style DB fill:#ffebee
+    style ExceptionHandler fill:#fff3e0
+    style Validation fill:#f1f8e9
+    style Lombok fill:#f1f8e9
