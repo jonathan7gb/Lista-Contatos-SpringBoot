@@ -2,6 +2,7 @@ package com.listacontatos.jonathan.application.service;
 
 import com.listacontatos.jonathan.application.dto.ContactRequestDTO;
 import com.listacontatos.jonathan.application.dto.ContactResponseDTO;
+import com.listacontatos.jonathan.domain.repository.ContactRepository;
 import com.listacontatos.jonathan.infra.exceptions.ContactDataIsNull;
 import com.listacontatos.jonathan.infra.exceptions.ContactNotFound;
 import com.listacontatos.jonathan.infra.exceptions.InvalidPhoneNumber;
@@ -18,11 +19,14 @@ import java.util.List;
 @Service
 public class ContactService {
 
-    @Autowired
-    private ContactRepositoryImpl contactRepositoryImpl;
+    private final ContactRepositoryImpl contactRepositoryImpl;
 
-    @Autowired
-    private ContactMapper contactMapper;
+    private final ContactMapper contactMapper;
+
+    public ContactService(ContactRepositoryImpl contactRepository, ContactMapper contactMapper){
+        this.contactRepositoryImpl = contactRepository;
+        this.contactMapper = contactMapper;
+    }
 
     public ContactResponseDTO save(ContactRequestDTO requestDTO) {
         if(requestDTO.name() == null || requestDTO.name().isBlank()){

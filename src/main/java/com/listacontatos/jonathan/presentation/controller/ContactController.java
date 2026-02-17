@@ -15,11 +15,12 @@ import java.util.List;
 @RequestMapping("/contacts")
 public class ContactController {
 
-    @Autowired
-    private ContactRepositoryImpl contactRepositoryImpl;
 
-    @Autowired
-    private ContactService contactService;
+    private final ContactService contactService;
+
+    public ContactController (ContactService contactService){
+        this.contactService = contactService;
+    }
 
     @PostMapping
     public ResponseEntity<Void> save(@RequestBody ContactRequestDTO requestDTO){
@@ -46,7 +47,7 @@ public class ContactController {
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> delete(@PathVariable Long id){
-        contactRepositoryImpl.deleteById(id);
+        contactService.delete(id);
         return ResponseEntity.noContent().build();
 
     }
